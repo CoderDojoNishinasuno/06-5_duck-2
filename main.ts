@@ -1,19 +1,12 @@
 radio.onReceivedNumber(function (receivedNumber) {
     if (receivedNumber == 0) {
-        if (自分のID == 0) {
-            radio.sendNumber(mbits.pop())
-        }
+        do_server()
     } else if (receivedNumber == 自分のID) {
-        あひるを表示()
-        basic.pause(1000)
-        basic.showIcon(IconNames.Sad)
-        music._playDefaultBackground(music.builtInPlayableMelody(Melodies.Funeral), music.PlaybackMode.InBackground)
-        basic.pause(1000)
-        radio.setGroup(10)
+        do_lose()
+    } else if (receivedNumber == 99) {
+        do_win()
     } else {
-        あひるを表示()
-        basic.pause(1000)
-        あひる通過()
+        do_safe()
     }
 })
 function あひるを表示 () {
@@ -38,9 +31,17 @@ function あひるを表示 () {
         . . # # #
         . . . # #
         . . . # #
+        . . . # .
+        `)
+    basic.pause(50)
+    basic.showLeds(`
+        . . . # #
+        . . # # #
+        . . . # #
+        . . . # #
         . . . . #
         `)
-    basic.pause(100)
+    basic.pause(50)
     basic.showLeds(`
         . . # # .
         . # # # .
@@ -48,7 +49,23 @@ function あひるを表示 () {
         . . # # #
         . . # . .
         `)
-    basic.pause(100)
+    basic.pause(30)
+    basic.showLeds(`
+        . . # # .
+        . # # # .
+        . . # # #
+        . . # # #
+        . . . # .
+        `)
+    basic.pause(30)
+    basic.showLeds(`
+        . # # . .
+        # # # . .
+        . # # # #
+        . # # # .
+        . # . . .
+        `)
+    basic.pause(30)
     basic.showLeds(`
         . # # . .
         # # # . .
@@ -56,9 +73,46 @@ function あひるを表示 () {
         . # # # .
         . . # . .
         `)
+    basic.pause(30)
+    basic.showLeds(`
+        . # # . .
+        # # # . .
+        . # # # #
+        . # # # .
+        . . . # .
+        `)
+}
+function do_server () {
+    if (自分のID == 0) {
+        radio.sendNumber(mbits.pop())
+        if (mbits.length == 1) {
+            basic.pause(7000)
+            radio.sendNumber(99)
+        }
+    }
+}
+function do_win () {
+    radio.setGroup(10)
+    music._playDefaultBackground(music.builtInPlayableMelody(Melodies.Entertainer), music.PlaybackMode.InBackground)
+    for (let index = 0; index < 15; index++) {
+        basic.showLeds(`
+            . . . . .
+            . . . . .
+            . . # . .
+            . . . . .
+            . . . . .
+            `)
+        basic.showIcon(IconNames.SmallDiamond)
+        basic.showIcon(IconNames.Diamond)
+        basic.showIcon(IconNames.Target)
+        basic.showIcon(IconNames.Chessboard)
+    }
 }
 input.onButtonPressed(Button.A, function () {
-    radio.sendNumber(0)
+    if (accept_A) {
+        accept_A = false
+        radio.sendNumber(0)
+    }
 })
 function あひる通過 () {
     basic.showLeds(`
@@ -68,7 +122,23 @@ function あひる通過 () {
         # # # . .
         # . . . .
         `)
-    basic.pause(100)
+    basic.pause(50)
+    basic.showLeds(`
+        # # . . .
+        # # . . .
+        # # # # .
+        # # # . .
+        . # . . .
+        `)
+    basic.pause(50)
+    basic.showLeds(`
+        # . . . .
+        # . . . .
+        # # # . .
+        # # . . .
+        # . . . .
+        `)
+    basic.pause(50)
     basic.showLeds(`
         # . . . .
         # . . . .
@@ -76,7 +146,7 @@ function あひる通過 () {
         # # . . .
         . # . . .
         `)
-    basic.pause(100)
+    basic.pause(50)
     basic.showLeds(`
         . . . . .
         . . . . .
@@ -101,9 +171,24 @@ function あひる通過 () {
         . . . . .
         `)
 }
+function do_lose () {
+    radio.setGroup(10)
+    あひるを表示()
+    basic.pause(4000)
+    basic.showIcon(IconNames.Sad)
+    music._playDefaultBackground(music.builtInPlayableMelody(Melodies.Funeral), music.PlaybackMode.InBackground)
+}
+function do_safe () {
+    あひるを表示()
+    basic.pause(1000)
+    あひる通過()
+    accept_A = true
+}
 let mbits: number[] = []
+let accept_A = false
 let 自分のID = 0
 自分のID = 0
+accept_A = true
 mbits = [
 1,
 2,
